@@ -1,33 +1,27 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Product {
+export class Provider {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   id: number;
 
   @Column({ type: 'varchar', length: 50 })
   name: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  description: string;
+  @Column({ type: 'varchar', length: 50 })
+  address: string;
+
+  @Column({ type: 'int4' })
+  phone_number: number;
 
   @Column({ type: 'varchar', length: 50 })
-  brand: string;
-
-  @Column({ type: 'numeric' })
-  buy_price: number;
-
-  @Column({ type: 'numeric' })
-  sale_price: number;
+  contact: string;
 
   @Column({ type: 'varchar', length: 50 })
-  category: string;
+  e_mail: string;
 
   @Column({ type: 'varchar', length: 50 })
-  provider: string;
-
-  @Column({ type: 'int', default: 0 })
-  stock: number;
+  password: string;
 
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
