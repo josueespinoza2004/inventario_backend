@@ -14,10 +14,10 @@ export class Product {
   @Column({ type: 'varchar', length: 50 })
   brand: string;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'float', default: 0 })
   buy_price: number;
 
-  @Column({ type: 'numeric' })
+  @Column({ type: 'float', default: 0 })
   sale_price: number;
 
   @Column({ type: 'varchar', length: 50 })
