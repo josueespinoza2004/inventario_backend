@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Param } from '@nestjs/common';
 import { ProvidersService } from '../../services/providers/providers.service';
 import { CreateProviderDto } from '../../dto/provider.dto';
 
@@ -14,5 +14,14 @@ export class ProvidersController {
   @Post()
   createProvider(@Body() createProviderDto: CreateProviderDto) {
     return this.providersService.create(createProviderDto);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.providersService.findOne(id);
+  }
+  @Delete(':id')
+  remove(@Param('id') id: number) {
+    return this.providersService.remove(id);
   }
 }
