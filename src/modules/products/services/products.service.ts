@@ -51,7 +51,7 @@ export class ProductsService {
     await this.productRepository.remove(product);
 
     return {
-      message: `Producto con ID ${id} ha sido elimnado correctamente`,
+      message: `Producto de marca ${product.brand} ha sido elimnado correctamente`,
     };
   }
 
