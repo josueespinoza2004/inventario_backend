@@ -6,6 +6,7 @@ import { ProvidersController } from './modules/providers/controllers/providers/p
 import { ProvidersService } from './modules/providers/services/providers/providers.service';
 import { ProvidersModule } from './modules/providers/providers.module';
 import { CustomersModule } from './modules/customers/customers.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -26,6 +27,8 @@ import { CustomersModule } from './modules/customers/customers.module';
     ProvidersModule,
 
     CustomersModule,
+
+    CommonModule,
   ],
   controllers: [ProvidersController],
   providers: [ProvidersService],

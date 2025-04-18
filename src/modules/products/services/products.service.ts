@@ -5,10 +5,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateProductDto } from '../dto/product.dto';
+import { CreateProductDto, UpdateProductDto } from '../dto/product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../entities/product.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 @Injectable()
 export class ProductsService {
@@ -19,8 +20,12 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  findAll() {
-    return this.productRepository.find({});
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 3, offset = 0 } = paginationDto;
+    return this.productRepository.find({
+      take: limit,
+      skip: offset,
+    });
   }
 
   async create(createProductDto: CreateProductDto) {
@@ -46,12 +51,46 @@ export class ProductsService {
     return product;
   }
 
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const product = await this.productRepository.findOne({ where: { id } });
+
+    if (!product) {
+      throw new NotFoundException(`Producto con id ${id} no encontrado`);
+    }
+
+    try {
+      this.productRepository.merge(product, updateProductDto);
+      await this.productRepository.save(product);
+
+      return {
+        message: 'Registro actualizado con exito',
+        data: product,
+      };
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
+  // async remove(id: number) {
+  //   const product = await this.findOne(id);
+  //   await this.productRepository.remove(product);
+
+  //   return {
+  //     message: `Producto de marca ${product.brand} ha sido elimnado correctamente`,
+  //   };
+  // }
+
   async remove(id: number) {
-    const product = await this.findOne(id);
-    await this.productRepository.remove(product);
+    const exists = await this.productRepository.existsBy({ id });
+    if (!exists) {
+      throw new NotFoundException(`Producto con id ${id} no encontrado`);
+    }
+
+    await this.productRepository.softDelete(id);
 
     return {
-      message: `Producto de marca ${product.brand} ha sido elimnado correctamente`,
+      message: `Auto con id ${id} eliminado con exito`,
+      deleteAt: new Date(),
     };
   }
 
