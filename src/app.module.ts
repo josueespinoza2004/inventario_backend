@@ -6,6 +6,8 @@ import { ProvidersController } from './modules/providers/controllers/providers/p
 import { ProvidersService } from './modules/providers/services/providers/providers.service';
 import { ProvidersModule } from './modules/providers/providers.module';
 import { CustomersModule } from './modules/customers/customers.module';
+import { SalesModule } from './modules/sales/sales.module';
+import { SalesService } from './modules/sales/services/sales.service';
 import { CommonModule } from './common/common.module';
 
 @Module({
@@ -29,8 +31,10 @@ import { CommonModule } from './common/common.module';
     CustomersModule,
 
     CommonModule,
+
+    SalesModule,
   ],
   controllers: [ProvidersController],
-  providers: [ProvidersService],
+  providers: [ProvidersService, SalesService],
 })
 export class AppModule {}
