@@ -1,15 +1,32 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { CreateSaleDto } from '../dto/sale.dto';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateSaleDto, UpdateSaleDto } from '../dto/sale.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from '../entities/sale.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 @Injectable()
 export class SalesService {
+  private readonly looger = new Logger('SaleService');
+
   constructor(
     @InjectRepository(Sale)
     private readonly saleRepository: Repository<Sale>,
   ) {}
+
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 3, offset = 0 } = paginationDto;
+    return this.saleRepository.find({
+      take: limit,
+      skip: offset,
+    });
+  }
 
   async create(createSaleDto: CreateSaleDto) {
     try {
@@ -18,8 +35,71 @@ export class SalesService {
 
       return sale;
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException('Ayuda');
+      // console.log(error);
+      // throw new InternalServerErrorException('Ayuda');
+      this.handleDBException(error);
     }
+  }
+  async findOne(id: number) {
+    const sale = await this.saleRepository.findOneBy({ id });
+    if (!sale) {
+      throw new NotFoundException(
+        `Venta con id ${id} no encontrada en la base de datos`,
+      );
+    }
+    return sale;
+  }
+
+  async update(id: number, updateSaleDto: UpdateSaleDto) {
+    const sale = await this.saleRepository.findOne({ where: { id } });
+
+    if (!sale) {
+      throw new NotFoundException(`Venta con id ${id} no encontrada`);
+    }
+
+    try {
+      this.saleRepository.merge(sale, updateSaleDto);
+      await this.saleRepository.save(sale);
+
+      return {
+        message: 'Registro actualizado con exito',
+        data: sale,
+      };
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
+  // async remove(id: number) {
+  //   const sale = await this.findOne(id);
+  //   await this.saleRepository.remove(sale);
+
+  //   return {
+  //     message: `Venta con id ${id} ha sido eliminada correctamente`,
+  //   };
+  // }
+
+  async remove(id: number) {
+    const exists = await this.saleRepository.existsBy({ id });
+    if (!exists) {
+      throw new NotFoundException(`Venta con id ${id} no encontrada`);
+    }
+
+    await this.saleRepository.softDelete(id);
+
+    return {
+      message: `Venta con id ${id} eliminada con exito`,
+      deleteAt: new Date(),
+    };
+  }
+
+  private handleDBException(error: any) {
+    if (error.code === '23505') throw new BadRequestException(error.detail);
+
+    this.looger.error(error);
+
+    throw new InternalServerErrorException(
+      'Error inesperado, verififque los registros del servidor',
+    );
   }
 }
