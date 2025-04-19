@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Sale {
@@ -19,4 +26,20 @@ export class Sale {
 
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    // name: 'create_at',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  create_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updateAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deleteAt?: Date;
 }
