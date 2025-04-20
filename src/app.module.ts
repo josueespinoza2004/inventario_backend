@@ -9,6 +9,9 @@ import { CustomersModule } from './modules/customers/customers.module';
 import { SalesModule } from './modules/sales/sales.module';
 import { SalesService } from './modules/sales/services/sales.service';
 import { CommonModule } from './common/common.module';
+import { CategoriesController } from './modules/categories/controllers/categories.controller';
+import { CategoriesService } from './modules/categories/services/categories.service';
+import { CategoriesModule } from './modules/categories/categories.module';
 
 @Module({
   imports: [
@@ -33,8 +36,10 @@ import { CommonModule } from './common/common.module';
     CommonModule,
 
     SalesModule,
+
+    CategoriesModule,
   ],
-  controllers: [ProvidersController],
-  providers: [ProvidersService, SalesService],
+  controllers: [ProvidersController, CategoriesController],
+  providers: [ProvidersService, SalesService, CategoriesService],
 })
 export class AppModule {}
