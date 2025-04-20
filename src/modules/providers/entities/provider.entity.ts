@@ -1,4 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity()
 export class Provider {
@@ -21,8 +28,23 @@ export class Provider {
   e_mail: string;
 
   @Column({ type: 'varchar', length: 50 })
-  password: string;
+  ruc_number: string;
 
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
+
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  create_at: Date;
+
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  updateAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deleteAt?: Date;
 }

@@ -48,11 +48,11 @@ export class CreateProviderDto {
   @MinLength(3)
   @IsOptional()
   @ApiProperty()
-  password?: string;
+  ruc_number?: string;
 
   @IsOptional()
   @ApiProperty() // Asegúrate de que ApiProperty esté aquí
   isAvailable?: boolean;
 }
 
-export class UpdateCarDto extends PartialType(CreateProviderDto) {}
+export class UpdateProviderDto extends PartialType(CreateProviderDto) {}
