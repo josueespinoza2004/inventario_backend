@@ -5,10 +5,12 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateProviderDto } from '../../dto/provider.dto';
+import { CreateProviderDto, UpdateProviderDto } from '../../dto/provider.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Provider } from '../../entities/provider.entity';
 import { Repository } from 'typeorm';
+import { PaginationDto } from '../../../../common/dto/pagination.dto';
+import { UpdateProductDto } from '../../../products/dto/product.dto';
 
 @Injectable()
 export class ProvidersService {
@@ -19,15 +21,24 @@ export class ProvidersService {
     private readonly providerRepository: Repository<Provider>,
   ) {}
 
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 3, offset = 0 } = paginationDto;
+    return this.providerRepository.find({
+      take: limit,
+      skip: offset,
+    });
+  }
+
   async create(createProviderDto: CreateProviderDto) {
     try {
       const provider = this.providerRepository.create(createProviderDto);
       await this.providerRepository.save(provider);
 
-      return createProviderDto;
+      return provider;
     } catch (error) {
-      console.log(error);
-      throw new InternalServerErrorException('Ayuda!');
+      //console.log(error);
+      //throw new InternalServerErrorException('Ayuda!');
+      this.handleDBException(error);
     }
   }
   async findOne(id: number) {
@@ -40,12 +51,45 @@ export class ProvidersService {
     return provider;
   }
 
+  async update(id: number, updateProviderDto: UpdateProviderDto) {
+    const provider = await this.providerRepository.findOne({ where: { id }});
+
+    if (!provider) {
+      throw new NotFoundException(`Proveedor con id ${id} no encontrada`);
+    }
+
+    try {
+      this.providerRepository.merge(provider, updateProviderDto)
+      await this.providerRepository.save(provider);
+      return {
+        message: 'Registro actualizado con exito',
+        data: provider,
+      };
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+
+  //async remove(id: number) {
+  //const provider = await this.findOne(id);
+  //await this.providerRepository.remove(provider);
+
+  //return {
+  //message: `Proveedor de nombre ${provider.name} ha sido elimnado correctamente`,
+  //};
+  //}
+
   async remove(id: number) {
-    const provider = await this.findOne(id);
-    await this.providerRepository.remove(provider);
+    const exists = await this.providerRepository.existsBy({ id });
+    if (!exists) {
+      throw new NotFoundException(`Proveedor con id ${id} no encontrado`);
+    }
+
+    await this.providerRepository.softDelete(id);
 
     return {
-      message: `Proveedor de nombre ${provider.name} ha sido elimnado correctamente`,
+      message: `Proveedor con id ${id} eliminado con exito`,
+      deleteAt: new Date(),
     };
   }
 
