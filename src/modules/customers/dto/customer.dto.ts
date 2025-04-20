@@ -48,7 +48,7 @@ export class CreateCustomerDto {
   @MinLength(3)
   @IsOptional()
   @ApiProperty()
-  password?: string;
+  ruc_number?: string;
 
   @IsOptional()
   @ApiProperty() // Asegúrate de que ApiProperty esté aquí

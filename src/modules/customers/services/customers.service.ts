@@ -5,10 +5,11 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateCustomerDto } from '../dto/customer.dto';
+import { CreateCustomerDto, UpdateCustomerDto } from '../dto/customer.dto';
 import { Repository } from 'typeorm';
 import { Customer } from '../entities/customer.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationDto } from '../../../common/dto/pagination.dto';
 
 @Injectable()
 export class CustomersService {
@@ -18,6 +19,14 @@ export class CustomersService {
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
   ) {}
+
+  findAll(paginationDto: PaginationDto) {
+    const { limit = 3, offset = 0 } = paginationDto;
+    return this.customerRepository.find({
+      take: limit,
+      skip: offset,
+    });
+  }
 
   async create(createCustomerDto: CreateCustomerDto) {
     try {
@@ -42,12 +51,43 @@ export class CustomersService {
     return customer;
   }
 
+  async update(id: number, updateCustomerDto: UpdateCustomerDto) {
+    const customer = await this.customerRepository.findOne({ where: { id } });
+    if (!customer) {
+      throw new NotFoundException(`Cliente con id ${id} no econtrado`);
+    }
+    try {
+      this.customerRepository.merge(customer, updateCustomerDto);
+      await this.customerRepository.save(customer);
+
+      return {
+        message: `Registro actualizado con exito`,
+        data: customer,
+      };
+    } catch (error) {
+      this.handleDBException(error);
+    }
+  }
+  //async remove(id: number) {
+  //const customer = await this.findOne(id);
+  //await this.customerRepository.remove(customer);
+
+  //return {
+  //message: `Cliente de nombre ${customer.name} ha sido elimnado correctamente`,
+  //};
+  //}
+
   async remove(id: number) {
-    const customer = await this.findOne(id);
-    await this.customerRepository.remove(customer);
+    const exists = await this.customerRepository.existsBy({ id });
+    if (!exists) {
+      throw new NotFoundException(`Cliente con id ${id} no encontrado`);
+    }
+
+    await this.customerRepository.softDelete(id);
 
     return {
-      message: `Cliente de nombre ${customer.name} ha sido elimnado correctamente`,
+      message: `Cliente con id ${id} eliminado con exito`,
+      deleteAt: new Date(),
     };
   }
 

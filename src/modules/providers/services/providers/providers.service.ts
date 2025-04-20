@@ -52,14 +52,14 @@ export class ProvidersService {
   }
 
   async update(id: number, updateProviderDto: UpdateProviderDto) {
-    const provider = await this.providerRepository.findOne({ where: { id }});
+    const provider = await this.providerRepository.findOne({ where: { id } });
 
     if (!provider) {
       throw new NotFoundException(`Proveedor con id ${id} no encontrada`);
     }
 
     try {
-      this.providerRepository.merge(provider, updateProviderDto)
+      this.providerRepository.merge(provider, updateProviderDto);
       await this.providerRepository.save(provider);
       return {
         message: 'Registro actualizado con exito',
