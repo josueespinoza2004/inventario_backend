@@ -31,6 +31,12 @@ export class CreateProductDto {
   @ApiProperty()
   brand?: string;
 
+  @IsString()
+  @MinLength(3)
+  @IsOptional()
+  @ApiProperty()
+  model?: string;
+
   @IsNumber()
   @IsPositive()
   @IsOptional()

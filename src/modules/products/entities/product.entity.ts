@@ -21,6 +21,9 @@ export class Product {
   @Column({ type: 'varchar', length: 50 })
   brand: string;
 
+  @Column({ type: 'varchar', length: 50 })
+  model: string;
+
   @Column({ type: 'float', default: 0 })
   buy_price: number;
 
