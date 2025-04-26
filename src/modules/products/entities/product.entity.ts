@@ -5,12 +5,18 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity()
 export class Product {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   id: number;
+
+  @Column({ type: 'int4', nullable: false })
+  category_id: number;
 
   @Column({ type: 'varchar', length: 50 })
   name: string;
@@ -31,9 +37,6 @@ export class Product {
   sale_price: number;
 
   @Column({ type: 'varchar', length: 50 })
-  category: string;
-
-  @Column({ type: 'varchar', length: 50 })
   provider: string;
 
   @Column({ type: 'int', default: 0 })
@@ -42,19 +45,23 @@ export class Product {
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
 
+  @ManyToOne(() => Category)
+  @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
+  category: Category;
+
   @CreateDateColumn({
     type: 'timestamp',
     // name: 'create_at',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  create_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  updateAt: Date;
+  updatedAt: Date;
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
-  deleteAt?: Date;
+  deletedAt?: Date;
 }

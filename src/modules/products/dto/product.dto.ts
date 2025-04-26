@@ -1,6 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -53,12 +54,6 @@ export class CreateProductDto {
   @MinLength(3)
   @IsOptional()
   @ApiProperty()
-  category?: string;
-
-  @IsString()
-  @MinLength(3)
-  @IsOptional()
-  @ApiProperty()
   provider?: string;
 
   @IsInt()
@@ -70,6 +65,12 @@ export class CreateProductDto {
   @IsOptional()
   @ApiProperty()
   isAvailable?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly category_id: number;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}

@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../entities/product.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { Category } from '../../categories/entities/category.entity';
 
 @Injectable()
 export class ProductsService {
@@ -18,6 +19,8 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
   findAll(paginationDto: PaginationDto) {
@@ -25,6 +28,9 @@ export class ProductsService {
     return this.productRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        category: true,
+      },
     });
   }
 
@@ -51,24 +57,33 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto) {
-    const product = await this.productRepository.findOne({ where: { id } });
+  async update(id: number, changes: UpdateProductDto) {
+    const product = await this.productRepository.findOne({
+      where: { id },
+      relations: { category: true },
+    });
 
     if (!product) {
       throw new NotFoundException(`Producto con id ${id} no encontrado`);
     }
-
-    try {
-      this.productRepository.merge(product, updateProductDto);
-      await this.productRepository.save(product);
-
-      return {
-        message: 'Registro actualizado con exito',
-        data: product,
-      };
-    } catch (error) {
-      this.handleDBException(error);
+    if (changes.category_id) {
+      const category = await this.categoryRepository.findOneBy({
+        id: changes.category_id,
+      });
+      if (!category) {
+        throw new NotFoundException(
+          `Categoria con id ${changes.category_id} no encontrada`,
+        );
+      }
+      product.category = category;
     }
+    this.productRepository.merge(product, changes);
+    const update = await this.productRepository.save(product);
+
+    return {
+      message: 'Registro actualizado con exito',
+      data: update,
+    };
   }
 
   // async remove(id: number) {
