@@ -10,6 +10,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Sale } from '../entities/sale.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
+import { Customer } from '../../customers/entities/customer.entity';
 
 @Injectable()
 export class SalesService {
@@ -18,6 +19,8 @@ export class SalesService {
   constructor(
     @InjectRepository(Sale)
     private readonly saleRepository: Repository<Sale>,
+    @InjectRepository(Customer)
+    private readonly customerRepository: Repository<Customer>,
   ) {}
 
   findAll(paginationDto: PaginationDto) {
@@ -25,6 +28,9 @@ export class SalesService {
     return this.saleRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        customer: true,
+      },
     });
   }
 
@@ -50,24 +56,34 @@ export class SalesService {
     return sale;
   }
 
-  async update(id: number, updateSaleDto: UpdateSaleDto) {
-    const sale = await this.saleRepository.findOne({ where: { id } });
+  async update(id: number, changes: UpdateSaleDto) {
+    const sale = await this.saleRepository.findOne({
+      where: { id },
+      relations: { customer: true },
+    });
 
     if (!sale) {
       throw new NotFoundException(`Venta con id ${id} no encontrada`);
     }
 
-    try {
-      this.saleRepository.merge(sale, updateSaleDto);
-      await this.saleRepository.save(sale);
-
-      return {
-        message: 'Registro actualizado con exito',
-        data: sale,
-      };
-    } catch (error) {
-      this.handleDBException(error);
+    if (changes.customer_id) {
+      const customer = await this.customerRepository.findOneBy({
+        id: changes.customer_id,
+      });
+      if (!customer) {
+        throw new NotFoundException(
+          `Cliente con id ${changes.customer_id} no encontrado`,
+        );
+      }
+      sale.customer = customer;
     }
+    this.saleRepository.merge(sale, changes);
+    const update = await this.saleRepository.save(sale);
+
+    return {
+      message: `Venta actualizada con exito`,
+      data: update,
+    };
   }
 
   // async remove(id: number) {
