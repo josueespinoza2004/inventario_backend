@@ -50,12 +50,6 @@ export class CreateProductDto {
   @ApiProperty()
   sale_price?: number;
 
-  @IsString()
-  @MinLength(3)
-  @IsOptional()
-  @ApiProperty()
-  provider?: string;
-
   @IsInt()
   @IsPositive()
   @IsOptional()
@@ -71,6 +65,12 @@ export class CreateProductDto {
   @ApiProperty()
   @IsNotEmpty()
   readonly category_id: number;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly provider_id: number;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
