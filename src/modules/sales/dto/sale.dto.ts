@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -38,6 +39,12 @@ export class CreateSaleDto {
   @IsOptional()
   @ApiProperty()
   isAvailable?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly customer_id: number;
 }
 
 export class UpdateSaleDto extends PartialType(CreateSaleDto) {}

@@ -3,14 +3,20 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Customer } from '../../customers/entities/customer.entity';
 
 @Entity()
 export class Sale {
   @PrimaryGeneratedColumn('increment', { type: 'int4' })
   id: number;
+
+  @Column({ type: 'int4', nullable: false })
+  customer_id: number;
 
   @Column({ type: 'varchar', length: 50 })
   date: string;
@@ -27,19 +33,23 @@ export class Sale {
   @Column({ type: 'bool', default: true })
   isAvailable: boolean;
 
+  @ManyToOne(() => Customer)
+  @JoinColumn({ name: 'customer_id', referencedColumnName: 'id' })
+  customer: Customer;
+
   @CreateDateColumn({
     type: 'timestamp',
     // name: 'create_at',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  create_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  updateAt: Date;
+  updatedAt: Date;
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
-  deleteAt?: Date;
+  deletedAt?: Date;
 }
