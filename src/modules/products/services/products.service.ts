@@ -11,6 +11,7 @@ import { Product } from '../entities/product.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
 import { Category } from '../../categories/entities/category.entity';
+import { Provider } from '../../providers/entities/provider.entity';
 
 @Injectable()
 export class ProductsService {
@@ -21,6 +22,8 @@ export class ProductsService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Provider)
+    private readonly providerRepository: Repository<Provider>, // Nuevo repositorio
   ) {}
 
   findAll(paginationDto: PaginationDto) {
@@ -76,6 +79,17 @@ export class ProductsService {
         );
       }
       product.category = category;
+    }
+    if (changes.provider_id) {
+      const provider = await this.providerRepository.findOneBy({
+        id: changes.provider_id,
+      });
+      if (!provider) {
+        throw new NotFoundException(
+          `Proveedor con id ${changes.provider_id} no encontrado`,
+        );
+      }
+      product.provider = provider;
     }
     this.productRepository.merge(product, changes);
     const update = await this.productRepository.save(product);

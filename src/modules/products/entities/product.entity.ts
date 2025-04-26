@@ -9,6 +9,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
+import { Provider } from '../../providers/entities/provider.entity';
 
 @Entity()
 export class Product {
@@ -17,6 +18,9 @@ export class Product {
 
   @Column({ type: 'int4', nullable: false })
   category_id: number;
+
+  @Column({ type: 'int4', nullable: false })
+  provider_id: number;
 
   @Column({ type: 'varchar', length: 50 })
   name: string;
@@ -36,9 +40,6 @@ export class Product {
   @Column({ type: 'float', default: 0 })
   sale_price: number;
 
-  @Column({ type: 'varchar', length: 50 })
-  provider: string;
-
   @Column({ type: 'int', default: 0 })
   stock: number;
 
@@ -48,6 +49,10 @@ export class Product {
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
   category: Category;
+
+  @ManyToOne(() => Provider)
+  @JoinColumn({ name: 'provider_id', referencedColumnName: 'id' })
+  provider: Provider;
 
   @CreateDateColumn({
     type: 'timestamp',
