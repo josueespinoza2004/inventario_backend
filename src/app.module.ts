@@ -12,6 +12,7 @@ import { CommonModule } from './common/common.module';
 import { CategoriesController } from './modules/categories/controllers/categories.controller';
 import { CategoriesService } from './modules/categories/services/categories.service';
 import { CategoriesModule } from './modules/categories/categories.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [
@@ -38,6 +39,8 @@ import { CategoriesModule } from './modules/categories/categories.module';
     SalesModule,
 
     CategoriesModule,
+
+    SeedModule,
   ],
   controllers: [ProvidersController, CategoriesController],
   providers: [ProvidersService, SalesService, CategoriesService],

@@ -37,14 +37,14 @@ export class Provider {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  create_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  updateAt: Date;
+  updatedAt: Date;
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
-  deleteAt?: Date;
+  deletedAt?: Date;
 }
