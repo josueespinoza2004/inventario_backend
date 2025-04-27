@@ -17,4 +17,13 @@ export class SeedController {
   executedSeedProviders() {
     return this.seedService.runSeedProviders();
   }
+
+  @Get('sales')
+  executedSeedSales() {
+    return this.seedService.runSeedSales();
+  }
+  @Get('customers')
+  executedSeedCustomers() {
+    return this.seedService.runSeedCustomers();
+  }
 }

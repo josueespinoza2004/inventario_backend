@@ -6,6 +6,10 @@ import { CategoriesService } from '../modules/categories/services/categories.ser
 import { Category } from '../modules/categories/entities/category.entity';
 import { Provider } from '../modules/providers/entities/provider.entity';
 import { ProvidersService } from '../modules/providers/services/providers/providers.service';
+import { SalesService } from '../modules/sales/services/sales.service';
+import { Sale } from '../modules/sales/entities/sale.entity';
+import { CustomersService } from '../modules/customers/services/customers.service';
+import { Customer } from '../modules/customers/entities/customer.entity';
 
 @Injectable()
 export class SeedService {
@@ -13,6 +17,8 @@ export class SeedService {
     private readonly productsService: ProductsService,
     private readonly categoriesService: CategoriesService,
     private readonly providersService: ProvidersService,
+    private readonly salesService: SalesService,
+    private readonly customersService: CustomersService,
   ) {}
 
   async runSeedProducts() {
@@ -49,6 +55,39 @@ export class SeedService {
 
     providers.forEach((provider) => {
       insertPromises.push(this.providersService.create(provider));
+    });
+    await Promise.all(insertPromises);
+    return true;
+  }
+
+  async runSeedSales() {
+    await this.insertNewSales();
+    return 'SEED SALES EXECUTED';
+  }
+  private async insertNewSales() {
+    await this.salesService.deleteAllSales();
+
+    const sales = initialData.sales;
+    const insertPromises: Promise<Sale | undefined>[] = [];
+
+    sales.forEach((sale) => {
+      insertPromises.push(this.salesService.create(sale));
+    });
+
+    await Promise.all(insertPromises);
+    return true;
+  }
+
+  async runSeedCustomers() {
+    await this.insertNewCustomers();
+    return 'SEED CUSTOMERS EXECUTED';
+  }
+  private async insertNewCustomers() {
+    await this.customersService.deleteAllCustomers();
+    const customers = initialData.customers;
+    const insertPromises: Promise<Customer | undefined>[] = [];
+    customers.forEach((customer) => {
+      insertPromises.push(this.customersService.create(customer));
     });
     await Promise.all(insertPromises);
     return true;
