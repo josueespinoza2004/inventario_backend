@@ -87,8 +87,18 @@ export class CustomersService {
 
     return {
       message: `Cliente con id ${id} eliminado con exito`,
-      deleteAt: new Date(),
+      deletedAt: new Date(),
     };
+  }
+
+  async deleteAllCustomers() {
+    const query = this.customerRepository.createQueryBuilder('customer');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
   }
 
   private handleDBException(error: any) {

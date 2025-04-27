@@ -37,6 +37,33 @@ interface SeedData {
   products: SeedProduct[];
   categories: SeedCategory[];
   providers: SeedProvider[];
+  sales: SeedSale[];
+  customers: SeedCustomer[];
+}
+
+interface SeedSale {
+  id: number;
+  date: string;
+  total: number;
+  customer_id: number;
+  payment_method: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
+}
+
+interface SeedCustomer {
+  id: number;
+  name: string;
+  e_mail: string;
+  phone_number: number;
+  address: string;
+  contact: string;
+  ruc_number: string;
+  isAvailable: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt?: Date;
 }
 
 export const initialData: SeedData = {
@@ -176,6 +203,82 @@ export const initialData: SeedData = {
       isAvailable: true,
       category_id: 3,
       provider_id: 5,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ],
+  sales: [
+    {
+      id: 1,
+      date: '2025-04-01',
+      total: 150.5,
+      customer_id: 1,
+      payment_method: 'Credit Card',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 2,
+      date: '2025-04-15',
+      total: 200.0,
+      customer_id: 2,
+      payment_method: 'Cash',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 3,
+      date: '2025-04-20', // Fecha como string
+      total: 50.75,
+      customer_id: 3,
+      payment_method: 'Debit Card',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 4,
+      date: '2025-04-25', // Fecha como string
+      total: 300.0,
+      customer_id: 1,
+      payment_method: 'Bank Transfer',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+  ],
+  customers: [
+    {
+      id: 1,
+      name: 'John Doe',
+      e_mail: 'john.doe@example.com',
+      phone_number: 555 - 1234,
+      address: '123 Main Street',
+      contact: 'Juan Pérez',
+      ruc_number: '1234567890',
+      isAvailable: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      e_mail: 'jane.smith@example.com',
+      phone_number: 555 - 5678,
+      address: '456 Elm Street',
+      contact: 'María López',
+      ruc_number: '0987654321',
+      isAvailable: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      id: 3,
+      name: 'Alice Johnson',
+      e_mail: 'alice.johnson@example.com',
+      phone_number: 555 - 9101,
+      address: '789 Oak Avenue',
+      contact: 'Carlos García',
+      ruc_number: '1122334455',
+      isAvailable: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
