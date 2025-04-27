@@ -10,7 +10,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Provider } from '../../entities/provider.entity';
 import { Repository } from 'typeorm';
 import { PaginationDto } from '../../../../common/dto/pagination.dto';
-import { UpdateProductDto } from '../../../products/dto/product.dto';
 
 @Injectable()
 export class ProvidersService {
@@ -89,8 +88,18 @@ export class ProvidersService {
 
     return {
       message: `Proveedor con id ${id} eliminado con exito`,
-      deleteAt: new Date(),
+      deleteAdt: new Date(),
     };
+  }
+
+  async deleteAllProviders() {
+    const query = this.providerRepository.createQueryBuilder('provider');
+
+    try {
+      return await query.delete().where({}).execute();
+    } catch (error) {
+      this.handleDBException(error);
+    }
   }
 
   private handleDBException(error: any) {
