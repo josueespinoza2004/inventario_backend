@@ -14,6 +14,7 @@ import { CategoriesService } from './modules/categories/services/categories.serv
 import { CategoriesModule } from './modules/categories/categories.module';
 import { SeedModule } from './seed/seed.module';
 import { ReportModule } from './modules/reports/reports.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -44,6 +45,8 @@ import { ReportModule } from './modules/reports/reports.module';
     SeedModule,
 
     ReportModule,
+
+    AuthModule,
   ],
   controllers: [ProvidersController, CategoriesController],
   providers: [ProvidersService, SalesService, CategoriesService],
