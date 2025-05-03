@@ -6,6 +6,9 @@ import { Repository } from 'typeorm';
 import { Provider } from '../../../providers/entities/provider.entity';
 import { Product } from '../../../products/entities/product.entity';
 import { Category } from '../../../categories/entities/category.entity';
+import { Customer } from '../../../customers/entities/customer.entity';
+import { Sale } from '../../../sales/entities/sale.entity';
+import { User } from '../../../../auth/entities/user.entity';
 
 @Injectable()
 export class ReportService {
@@ -15,7 +18,13 @@ export class ReportService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>, // Nuevo repositorio
+    private readonly categoryRepository: Repository<Category>,
+    @InjectRepository(Customer)
+    private readonly customerRepository: Repository<Customer>,
+    @InjectRepository(Sale)
+    private readonly saleRepository: Repository<Sale>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async generateExcelReport(res: Response): Promise<void> {
@@ -140,6 +149,122 @@ export class ReportService {
       'Content-Disposition',
       'attachment; filename=Categorias.xlsx',
     );
+
+    // Enviar el archivo Excel como respuesta
+    await workbook.xlsx.write(res);
+    res.end();
+  }
+
+  async generateCustomerReport(res: Response): Promise<void> {
+    // Obtener datos de la base de datos
+    const customers = await this.customerRepository.find();
+
+    // Crear un nuevo libro de Excel
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Clientes');
+
+    // Agregar encabezados
+    worksheet.columns = [
+      { header: 'ID', key: 'id', width: 10 },
+      { header: 'Nombre', key: 'name', width: 30 },
+      { header: 'Correo Electrónico', key: 'e_mail', width: 30 },
+      { header: 'Teléfono', key: 'phone_number', width: 15 },
+      { header: 'Dirección', key: 'address', width: 40 },
+    ];
+
+    // Agregar datos al reporte
+    customers.forEach((customer) => {
+      worksheet.addRow({
+        id: customer.id,
+        name: customer.name,
+        e_mail: customer.e_mail,
+        phone_number: customer.phone_number,
+        address: customer.address,
+      });
+    });
+
+    // Configurar el encabezado de respuesta para descargar el archivo
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=Clientes.xlsx');
+
+    // Enviar el archivo Excel como respuesta
+    await workbook.xlsx.write(res);
+    res.end();
+  }
+  async generateSaleReport(res: Response): Promise<void> {
+    // Obtener datos de la base de datos
+    const sales = await this.saleRepository.find();
+
+    // Crear un nuevo libro de Excel
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Ventas');
+
+    // Agregar encabezados
+    worksheet.columns = [
+      { header: 'ID', key: 'id', width: 10 },
+      { header: 'Fecha', key: 'date', width: 20 },
+      { header: 'Total', key: 'total', width: 15 },
+      { header: 'Método de Pago', key: 'payment_method', width: 20 },
+    ];
+
+    // Agregar datos al reporte
+    sales.forEach((sale) => {
+      worksheet.addRow({
+        id: sale.id,
+        date: sale.date,
+        total: sale.total,
+        payment_method: sale.payment_method,
+      });
+    });
+
+    // Configurar el encabezado de respuesta para descargar el archivo
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=Ventas.xlsx');
+
+    // Enviar el archivo Excel como respuesta
+    await workbook.xlsx.write(res);
+    res.end();
+  }
+  async generateUserReport(res: Response): Promise<void> {
+    // Obtener datos de la base de datos
+    const users = await this.userRepository.find();
+
+    // Crear un nuevo libro de Excel
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Usuarios');
+
+    // Agregar encabezados
+    worksheet.columns = [
+      { header: 'ID', key: 'id', width: 10 },
+      { header: 'Nombre Completo', key: 'fullName', width: 30 },
+      { header: 'Correo Electrónico', key: 'email', width: 30 },
+      { header: 'Activo', key: 'isActive', width: 10 },
+      { header: 'Roles', key: 'roles', width: 30 },
+    ];
+
+    // Agregar datos al reporte
+    users.forEach((user) => {
+      worksheet.addRow({
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        isActive: user.isActive ? 'Sí' : 'No',
+        roles: user.roles.join(', '), // Convierte el array de roles a una cadena
+      });
+    });
+
+    // Configurar el encabezado de respuesta para descargar el archivo
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=Usuarios.xlsx');
 
     // Enviar el archivo Excel como respuesta
     await workbook.xlsx.write(res);

@@ -18,4 +18,16 @@ export class ReportController {
   async getCategoryReport(@Res() res: Response): Promise<void> {
     await this.reportService.generateCategoryReport(res);
   }
+  @Get('excel/customers')
+  async getCustomerReport(@Res() res: Response): Promise<void> {
+    await this.reportService.generateCustomerReport(res);
+  }
+  @Get('excel/sales')
+  async getSaleReport(@Res() res: Response): Promise<void> {
+    await this.reportService.generateSaleReport(res);
+  }
+  @Get('excel/users')
+  async getUserReport(@Res() res: Response): Promise<void> {
+    await this.reportService.generateUserReport(res);
+  }
 }
