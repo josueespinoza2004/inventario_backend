@@ -6,8 +6,16 @@ import { ReportService } from '../../services/report/report.service';
 export class ReportController {
   constructor(private readonly reportService: ReportService) {}
 
-  @Get('excel')
+  @Get('excel/providers')
   async getExcelReport(@Res() res: Response): Promise<void> {
     await this.reportService.generateExcelReport(res);
+  }
+  @Get('excel/products')
+  async getProductReport(@Res() res: Response): Promise<void> {
+    await this.reportService.generateProductReport(res);
+  }
+  @Get('excel/categories')
+  async getCategoryReport(@Res() res: Response): Promise<void> {
+    await this.reportService.generateCategoryReport(res);
   }
 }

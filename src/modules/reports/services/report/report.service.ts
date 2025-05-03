@@ -4,12 +4,18 @@ import { Response } from 'express';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Provider } from '../../../providers/entities/provider.entity';
+import { Product } from '../../../products/entities/product.entity';
+import { Category } from '../../../categories/entities/category.entity';
 
 @Injectable()
 export class ReportService {
   constructor(
     @InjectRepository(Provider)
-    private readonly providerRepository: Repository<Provider>, // Inyecta el repositorio de Provider
+    private readonly providerRepository: Repository<Provider>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>, // Nuevo repositorio
   ) {}
 
   async generateExcelReport(res: Response): Promise<void> {
@@ -54,6 +60,85 @@ export class ReportService {
     res.setHeader(
       'Content-Disposition',
       'attachment; filename=Proveedores.xlsx',
+    );
+
+    // Enviar el archivo Excel como respuesta
+    await workbook.xlsx.write(res);
+    res.end();
+  }
+  async generateProductReport(res: Response): Promise<void> {
+    // Obtener datos de la base de datos
+    const products = await this.productRepository.find();
+
+    // Crear un nuevo libro de Excel
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Productos');
+
+    // Agregar encabezados
+    worksheet.columns = [
+      { header: 'ID', key: 'id', width: 10 },
+      { header: 'Nombre', key: 'name', width: 30 },
+      { header: 'Descripción', key: 'description', width: 40 },
+      { header: 'Precio de Compra', key: 'buy_price', width: 15 },
+      { header: 'Precio de Venta', key: 'sale_price', width: 15 },
+      { header: 'Stock', key: 'stock', width: 10 },
+      { header: 'Disponible', key: 'isAvailable', width: 15 },
+    ];
+
+    // Agregar datos al reporte
+    products.forEach((product) => {
+      worksheet.addRow({
+        id: product.id,
+        name: product.name,
+        description: product.description,
+        buy_price: product.buy_price,
+        sale_price: product.sale_price,
+        stock: product.stock,
+        isAvailable: product.isAvailable ? 'Sí' : 'No',
+      });
+    });
+
+    // Configurar el encabezado de respuesta para descargar el archivo
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader('Content-Disposition', 'attachment; filename=Productos.xlsx');
+
+    // Enviar el archivo Excel como respuesta
+    await workbook.xlsx.write(res);
+    res.end();
+  }
+  async generateCategoryReport(res: Response): Promise<void> {
+    // Obtener datos de la base de datos
+    const categories = await this.categoryRepository.find();
+
+    // Crear un nuevo libro de Excel
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('Categorías');
+
+    // Agregar encabezados
+    worksheet.columns = [
+      { header: 'ID', key: 'id', width: 10 },
+      { header: 'Nombre', key: 'name', width: 30 },
+    ];
+
+    // Agregar datos al reporte
+    categories.forEach((category) => {
+      worksheet.addRow({
+        id: category.id,
+        name: category.name,
+      });
+    });
+
+    // Configurar el encabezado de respuesta para descargar el archivo
+    res.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename=Categorias.xlsx',
     );
 
     // Enviar el archivo Excel como respuesta
