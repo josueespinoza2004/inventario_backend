@@ -10,6 +10,9 @@ import { SalesService } from '../modules/sales/services/sales.service';
 import { Sale } from '../modules/sales/entities/sale.entity';
 import { CustomersService } from '../modules/customers/services/customers.service';
 import { Customer } from '../modules/customers/entities/customer.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from '../auth/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SeedService {
@@ -19,14 +22,22 @@ export class SeedService {
     private readonly providersService: ProvidersService,
     private readonly salesService: SalesService,
     private readonly customersService: CustomersService,
+
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async runSeedProducts() {
-    await this.insertNewProducts();
+    await this.deleteTables();
+
+    const adminUser = await this.insertUsers();
+
+    await this.insertNewProducts(adminUser);
     return 'SEED EXECUTED';
   }
 
   async runSeedCategories() {
+    await this.deleteTables();
     await this.insertNewCategories();
     return 'SEED CATEGORIES EXECUTED';
   }
@@ -44,6 +55,7 @@ export class SeedService {
   }
 
   async runSeedProviders() {
+    await this.deleteTables();
     await this.insertNewProviders();
     return 'SEED PROVIDERS EXECUTED';
   }
@@ -93,15 +105,37 @@ export class SeedService {
     return true;
   }
 
-  private async insertNewProducts() {
+  private async deleteTables() {
+    await this.productsService.deleteAllProducts();
+
+    const queryBuilder = this.userRepository.createQueryBuilder();
+
+    await queryBuilder.delete().where({}).execute();
+  }
+
+  private async insertUsers() {
+    const seedUsers = initialData.users;
+
+    const users: User[] = [];
+
+    seedUsers.forEach((user) => {
+      users.push(this.userRepository.create(user));
+    });
+
+    const dbUser = await this.userRepository.save(seedUsers);
+
+    return dbUser[0];
+  }
+
+  private async insertNewProducts(user: User) {
     await this.productsService.deleteAllProducts();
 
     const products = initialData.products;
     const insertPromises: Promise<Product | undefined>[] = [];
 
-    // products.forEach((product) => {
-    //   insertPromises.push(this.productsService.create(product));
-    // });
+    products.forEach((product) => {
+      insertPromises.push(this.productsService.create(product, user));
+    });
 
     await Promise.all(insertPromises);
 

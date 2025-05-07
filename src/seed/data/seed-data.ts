@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 interface SeedProduct {
   name: string;
   description: string;
@@ -33,7 +34,15 @@ interface SeedProvider {
   deletedAt?: Date;
 }
 
+interface SeedUser {
+  email: string;
+  fullName: string;
+  password: string;
+  roles: string[];
+}
+
 interface SeedData {
+  users: SeedUser[];
   products: SeedProduct[];
   categories: SeedCategory[];
   providers: SeedProvider[];
@@ -67,11 +76,33 @@ interface SeedCustomer {
 }
 
 export const initialData: SeedData = {
+  users: [
+    {
+      email: 'espinozajosue750@gmail.com',
+      fullName: 'Josue Espinoza',
+      password: bcrypt.hashSync('rooT12', 10),
+      roles: ['admin'],
+    },
+    {
+      email: 'castillowilmara.com',
+      fullName: 'Wilmara Castillo',
+      password: bcrypt.hashSync('rooT12', 10),
+      roles: ['user', 'super-user'],
+    },
+    {
+      email: 'salgadodavid.com',
+      fullName: 'David Salgado',
+      password: bcrypt.hashSync('rooT12', 10),
+      roles: ['admin', 'super-user'],
+    },
+  ],
+
   categories: [
     { id: 1, name: 'Herramientas manuales' },
     { id: 2, name: 'Herramientas eléctricas' },
     { id: 3, name: 'Accesorios' },
   ],
+
   providers: [
     {
       id: 1,
@@ -134,6 +165,7 @@ export const initialData: SeedData = {
       updatedAt: new Date(),
     },
   ],
+
   products: [
     {
       name: 'Martillo de Carpintero',
@@ -207,6 +239,7 @@ export const initialData: SeedData = {
       updatedAt: new Date(),
     },
   ],
+
   sales: [
     {
       id: 1,
@@ -245,6 +278,7 @@ export const initialData: SeedData = {
       updatedAt: new Date(),
     },
   ],
+
   customers: [
     {
       id: 1,
