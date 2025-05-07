@@ -23,7 +23,7 @@ export class SeedService {
 
   async runSeedProducts() {
     await this.insertNewProducts();
-    return 'SEED PRODUCTS EXECUTED';
+    return 'SEED EXECUTED';
   }
 
   async runSeedCategories() {
@@ -36,9 +36,9 @@ export class SeedService {
     const categories = initialData.categories;
     const insertPromises: Promise<Category | undefined>[] = [];
 
-    categories.forEach((category) => {
-      insertPromises.push(this.categoriesService.create(category));
-    });
+    // categories.forEach((category) => {
+    //   insertPromises.push(this.categoriesService.create(category));
+    // });
     await Promise.all(insertPromises);
     return true;
   }
@@ -53,9 +53,9 @@ export class SeedService {
     const providers = initialData.providers;
     const insertPromises: Promise<Provider | undefined>[] = [];
 
-    providers.forEach((provider) => {
-      insertPromises.push(this.providersService.create(provider));
-    });
+    // providers.forEach((provider) => {
+    //   insertPromises.push(this.providersService.create(provider));
+    // });
     await Promise.all(insertPromises);
     return true;
   }
@@ -99,9 +99,9 @@ export class SeedService {
     const products = initialData.products;
     const insertPromises: Promise<Product | undefined>[] = [];
 
-    products.forEach((product) => {
-      insertPromises.push(this.productsService.create(product));
-    });
+    // products.forEach((product) => {
+    //   insertPromises.push(this.productsService.create(product));
+    // });
 
     await Promise.all(insertPromises);
 
