@@ -6,6 +6,7 @@ import { CategoriesModule } from '../modules/categories/categories.module';
 import { ProvidersModule } from '../modules/providers/providers.module';
 import { SalesModule } from '../modules/sales/sales.module';
 import { CustomersModule } from '../modules/customers/customers.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   controllers: [SeedController],
@@ -16,6 +17,7 @@ import { CustomersModule } from '../modules/customers/customers.module';
     ProvidersModule,
     SalesModule,
     CustomersModule,
+    AuthModule,
   ],
 })
 export class SeedModule {}

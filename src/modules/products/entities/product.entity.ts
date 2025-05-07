@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Category } from '../../categories/entities/category.entity';
 import { Provider } from '../../providers/entities/provider.entity';
+import { User } from '../../../auth/entities/user.entity';
 
 @Entity()
 export class Product {
@@ -49,6 +50,10 @@ export class Product {
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id', referencedColumnName: 'id' })
   category: Category;
+
+  @ManyToOne(() => User, (user) => user.product, { eager: true })
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 
   @ManyToOne(() => Provider)
   @JoinColumn({ name: 'provider_id', referencedColumnName: 'id' })

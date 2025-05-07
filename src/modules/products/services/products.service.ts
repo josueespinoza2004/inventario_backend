@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { PaginationDto } from '../../../common/dto/pagination.dto';
 import { Category } from '../../categories/entities/category.entity';
 import { Provider } from '../../providers/entities/provider.entity';
+import { User } from '../../../auth/entities/user.entity';
 
 @Injectable()
 export class ProductsService {
@@ -37,9 +38,12 @@ export class ProductsService {
     });
   }
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, user: User) {
     try {
-      const product = this.productRepository.create(createProductDto);
+      const product = this.productRepository.create({
+        ...createProductDto,
+        user,
+      });
       await this.productRepository.save(product);
 
       return product;
@@ -60,10 +64,10 @@ export class ProductsService {
     return product;
   }
 
-  async update(id: number, changes: UpdateProductDto) {
+  async update(id: number, changes: UpdateProductDto, user: User) {
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: { category: true },
+      relations: { category: true, user: true },
     });
 
     if (!product) {
@@ -80,6 +84,11 @@ export class ProductsService {
       }
       product.category = category;
     }
+
+    if (user) {
+      product.user = user;
+    }
+
     if (changes.provider_id) {
       const provider = await this.providerRepository.findOneBy({
         id: changes.provider_id,
