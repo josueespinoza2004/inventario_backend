@@ -17,12 +17,18 @@ export class ProvidersController {
   constructor(private readonly providersService: ProvidersService) {}
 
   @Get()
-  getFindAll(@Query() paginationDto: PaginationDto) {
-    return this.providersService.findAll(paginationDto);
+  async getFindAll(@Query() paginationDto: PaginationDto) {
+    const result = await this.providersService.findAll(paginationDto);
+    // Forzar el formato correcto
+    return {
+      data: Array.isArray(result.data) ? result.data : [],
+      total: typeof result.total === 'number' ? result.total : 0,
+    };
   }
 
   @Post()
   createProvider(@Body() createProviderDto: CreateProviderDto) {
+    console.log('Llega al controller:', createProviderDto);
     return this.providersService.create(createProviderDto);
   }
 

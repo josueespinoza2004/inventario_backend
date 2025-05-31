@@ -20,21 +20,23 @@ export class ProvidersService {
     private readonly providerRepository: Repository<Provider>,
   ) {}
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
-    return this.providerRepository.find({
-      take: limit,
-      skip: offset,
+  async findAll(paginationDto: PaginationDto) {
+    const [data, total] = await this.providerRepository.findAndCount({
+      take: paginationDto.limit,
+      skip: paginationDto.offset,
     });
+    return { data, total };
   }
 
   async create(createProviderDto: CreateProviderDto) {
     try {
+      console.log('DTO recibido:', createProviderDto);
       const provider = this.providerRepository.create(createProviderDto);
       await this.providerRepository.save(provider);
 
       return provider;
     } catch (error) {
+      console.log('Error al crear proveedor:', error);
       //console.log(error);
       //throw new InternalServerErrorException('Ayuda!');
       this.handleDBException(error);
