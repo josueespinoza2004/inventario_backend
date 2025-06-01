@@ -20,16 +20,17 @@ export class CustomersService {
     private readonly customerRepository: Repository<Customer>,
   ) {}
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
-    return this.customerRepository.find({
-      take: limit,
-      skip: offset,
+  async findAll(paginationDto: PaginationDto) {
+    const [data, total] = await this.customerRepository.findAndCount({
+      take: paginationDto.limit,
+      skip: paginationDto.offset,
     });
+    return { data, total };
   }
 
   async create(createCustomerDto: CreateCustomerDto) {
     try {
+      console.log('DTO recibido: ', createCustomerDto);
       const customer = this.customerRepository.create(createCustomerDto);
       await this.customerRepository.save(customer);
 

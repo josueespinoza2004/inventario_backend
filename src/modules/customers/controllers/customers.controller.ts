@@ -17,12 +17,20 @@ export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Get()
-  getFindAll(@Query() paginationDto: PaginationDto) {
-    return this.customersService.findAll(paginationDto);
+  async getFindAll(@Query() paginationDto: PaginationDto) {
+    const limit = Number(paginationDto.limit) || 3;
+    const offset = Number(paginationDto.offset) || 0;
+
+    const result = await this.customersService.findAll({ limit, offset });
+    return {
+      data: Array.isArray(result.data) ? result.data : [],
+      total: typeof result.total === 'number' ? result.total : 0,
+    };
   }
 
   @Post()
   createCustomer(@Body() createCustomerDto: CreateCustomerDto) {
+    console.log('Llega al controller: ', createCustomerDto);
     return this.customersService.create(createCustomerDto);
   }
 
