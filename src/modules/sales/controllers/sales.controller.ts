@@ -17,13 +17,21 @@ export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
   @Get()
-  getFindAll(@Query() paginationDto: PaginationDto) {
+  async getFindAll(@Query() paginationDto: PaginationDto) {
     // console.log(paginationDto);
-    return this.salesService.findAll(paginationDto);
+    const limit = Number(paginationDto.limit) || 3;
+    const offset = Number(paginationDto.offset) || 0;
+    const result = await this.salesService.findAll({ limit, offset });
+
+    return {
+      data: Array.isArray(result.data) ? result.data : [],
+      total: typeof result.total === 'number' ? result.total : 0,
+    };
   }
 
   @Post()
   createSale(@Body() createSaleDto: CreateSaleDto) {
+    console.log('Llega al controller: ', createSaleDto);
     return this.salesService.create(createSaleDto);
   }
 

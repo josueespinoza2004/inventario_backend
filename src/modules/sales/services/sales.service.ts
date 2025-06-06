@@ -23,19 +23,18 @@ export class SalesService {
     private readonly customerRepository: Repository<Customer>,
   ) {}
 
-  findAll(paginationDto: PaginationDto) {
-    const { limit = 3, offset = 0 } = paginationDto;
-    return this.saleRepository.find({
-      take: limit,
-      skip: offset,
-      relations: {
-        customer: true,
-      },
+  async findAll(paginationDto: PaginationDto) {
+    const [data, total] = await this.saleRepository.findAndCount({
+      take: paginationDto.limit,
+      skip: paginationDto.offset,
+      relations: ['customer'],
     });
+    return { data, total };
   }
 
   async create(createSaleDto: CreateSaleDto) {
     try {
+      console.log('DTO recibido: ', createSaleDto);
       const sale = this.saleRepository.create(createSaleDto);
       await this.saleRepository.save(sale);
 
