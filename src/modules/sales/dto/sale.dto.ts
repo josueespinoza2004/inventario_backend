@@ -9,10 +9,10 @@ import {
 } from 'class-validator';
 
 export class CreateSaleDto {
-  @IsOptional()
-  @IsNumber()
-  @ApiProperty()
-  id?: number;
+  //@IsOptional()
+  //@IsNumber()
+  //@ApiProperty()
+  //id?: number;
 
   @IsString()
   @MinLength(3)
