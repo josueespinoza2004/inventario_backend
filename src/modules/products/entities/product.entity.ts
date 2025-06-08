@@ -29,6 +29,9 @@ export class Product {
   @Column({ type: 'varchar', length: 100 })
   description: string;
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  image: string;
+
   @Column({ type: 'varchar', length: 50 })
   brand: string;
 

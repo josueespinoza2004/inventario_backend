@@ -38,11 +38,16 @@ export class ProductsService {
     });
   }
 
-  async create(createProductDto: CreateProductDto, user: User) {
+  async create(
+    createProductDto: CreateProductDto,
+    user: User,
+    imagePath?: string,
+  ) {
     try {
       const product = this.productRepository.create({
         ...createProductDto,
         user,
+        image: imagePath,
       });
       await this.productRepository.save(product);
 
