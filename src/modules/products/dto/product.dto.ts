@@ -12,19 +12,19 @@ import {
 } from 'class-validator';
 
 export class CreateProductDto {
-  @IsOptional()
-  @IsNumber()
-  @ApiProperty()
-  id?: number;
+  // @IsOptional()
+  // @IsNumber()
+  // @ApiProperty()
+  // id?: number;
 
   @IsString()
   @MinLength(3)
   @IsOptional()
   @ApiProperty()
-  name?: string;
+  name: string;
 
   @IsString()
-  @MinLength(3)
+  @MinLength(3, { message: 'La descripción debe tener al menos 3 caracteres' })
   @ApiProperty()
   description: string;
 
@@ -93,12 +93,15 @@ export class UpdateProductDto extends PartialType(CreateProductDto) {}
 export class FilterProductDto {
   @IsOptional()
   @IsPositive()
-  limit: number;
+  @Type(() => Number)
+  limit: number = 3;
 
   @IsOptional()
   @Min(0)
-  offset: number;
+  @Type(() => Number)
+  offset: number = 0;
 
   @IsOptional()
-  description: string;
+  @IsString()
+  description?: string;
 }

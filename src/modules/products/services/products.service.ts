@@ -27,15 +27,19 @@ export class ProductsService {
     private readonly providerRepository: Repository<Provider>, // Nuevo repositorio
   ) {}
 
-  findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto) {
     const { limit = 3, offset = 0 } = paginationDto;
-    return this.productRepository.find({
+
+    const [products, total] = await this.productRepository.findAndCount({
       take: limit,
       skip: offset,
       relations: {
         category: true,
+        provider: true,
       },
     });
+
+    return { products, total };
   }
 
   async create(

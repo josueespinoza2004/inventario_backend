@@ -1,4 +1,6 @@
 import {
+  BadGatewayException,
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -29,13 +31,24 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  async getFindAll(@Query() params: FilterProductDto) {
-    const rows = await this.productsService.findAll(params);
+  async getFindAll(@Query() params: PaginationDto) {
+    try {
+      const { products, total } = await this.productsService.findAll(params);
 
-    const data = {
-      data: rows,
-    };
-    return data;
+      const data = {
+        data: products.map((product) => ({
+          ...product,
+          image: product.image
+            ? `${process.env.BASE_URL}${product.image}`
+            : null,
+        })),
+        total, // Incluye el total en la respuesta
+      };
+
+      return data;
+    } catch (error) {
+      throw new BadRequestException('Error al obtener los productos');
+    }
   }
 
   @Post('upload')
@@ -79,6 +92,9 @@ export class ProductsController {
     @GetUser() user: User,
     @UploadedFile() file?: Express.Multer.File,
   ) {
+    console.log('Datos recibidos en el backend:', createProductDto);
+    console.log('Archivo recibido:', file);
+
     const imagePath = file ? `/uploads/products/${file.filename}` : undefined;
     const nuevo = await this.productsService.create(
       createProductDto,
