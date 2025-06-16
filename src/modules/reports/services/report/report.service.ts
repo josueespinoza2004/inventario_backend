@@ -44,7 +44,7 @@ export class ReportService {
       { header: 'Contacto', key: 'contact', width: 20 },
       { header: 'Correo Electrónico', key: 'e_mail', width: 30 },
       { header: 'RUC', key: 'ruc_number', width: 20 },
-      { header: 'Disponible', key: 'isAvailable', width: 15 },
+      { header: 'Estado', key: 'isAvailable', width: 15 },
     ];
 
     // Agregar datos al reporte
@@ -57,7 +57,19 @@ export class ReportService {
         contact: provider.contact,
         e_mail: provider.e_mail,
         ruc_number: provider.ruc_number,
-        isAvailable: provider.isAvailable ? 'Sí' : 'No',
+        isAvailable: provider.isAvailable ? 'Activo' : 'Inactivo',
+      });
+    });
+
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' }; // Alineación centrada
       });
     });
 
@@ -91,7 +103,9 @@ export class ReportService {
       { header: 'Precio de Compra', key: 'buy_price', width: 15 },
       { header: 'Precio de Venta', key: 'sale_price', width: 15 },
       { header: 'Stock', key: 'stock', width: 10 },
-      { header: 'Disponible', key: 'isAvailable', width: 15 },
+      { header: 'Disponibilidad', key: 'isAvailable', width: 15 },
+      { header: 'Categoría ID', key: 'category_id', width: 15 },
+      { header: 'Proveedor ID', key: 'provider_id', width: 15 },
     ];
 
     // Agregar datos al reporte
@@ -103,7 +117,21 @@ export class ReportService {
         buy_price: product.buy_price,
         sale_price: product.sale_price,
         stock: product.stock,
-        isAvailable: product.isAvailable ? 'Sí' : 'No',
+        isAvailable: product.isAvailable ? 'Disponible' : 'No disponible',
+        category_id: product.category_id,
+        provider_id: product.provider_id,
+      });
+    });
+
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
       });
     });
 
@@ -140,6 +168,18 @@ export class ReportService {
       });
     });
 
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
+      });
+    });
+
     // Configurar el encabezado de respuesta para descargar el archivo
     res.setHeader(
       'Content-Type',
@@ -169,7 +209,10 @@ export class ReportService {
       { header: 'Nombre', key: 'name', width: 30 },
       { header: 'Correo Electrónico', key: 'e_mail', width: 30 },
       { header: 'Teléfono', key: 'phone_number', width: 15 },
+      { header: 'Contacto', key: 'contact', width: 20 },
       { header: 'Dirección', key: 'address', width: 40 },
+      { header: 'RUC', key: 'ruc_number', width: 20 },
+      { header: 'Estado', key: 'isAvailable', width: 15 },
     ];
 
     // Agregar datos al reporte
@@ -180,6 +223,21 @@ export class ReportService {
         e_mail: customer.e_mail,
         phone_number: customer.phone_number,
         address: customer.address,
+        contact: customer.contact,
+        ruc_number: customer.ruc_number,
+        isAvailable: customer.isAvailable ? 'Activo' : 'Inactivo',
+      });
+    });
+
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' };
       });
     });
 
@@ -205,6 +263,7 @@ export class ReportService {
     // Agregar encabezados
     worksheet.columns = [
       { header: 'ID', key: 'id', width: 10 },
+      { header: 'ID Cliente', key: 'customer_id', width: 15 },
       { header: 'Fecha', key: 'date', width: 20 },
       { header: 'Total', key: 'total', width: 15 },
       { header: 'Método de Pago', key: 'payment_method', width: 20 },
@@ -214,9 +273,22 @@ export class ReportService {
     sales.forEach((sale) => {
       worksheet.addRow({
         id: sale.id,
+        customer_id: sale.customer_id,
         date: sale.date,
         total: sale.total,
         payment_method: sale.payment_method,
+      });
+    });
+
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' }; // Alineación centrada
       });
     });
 
@@ -256,6 +328,17 @@ export class ReportService {
         email: user.email,
         isActive: user.isActive ? 'Sí' : 'No',
         roles: user.roles.join(', '), // Convierte el array de roles a una cadena
+      });
+    });
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        };
+        cell.alignment = { horizontal: 'center', vertical: 'middle' }; // Alineación centrada
       });
     });
 
