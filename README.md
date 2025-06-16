@@ -25,77 +25,152 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-## Project setup
+# Inventario Ferretería Backend
 
-1. Clonar proyecto
-2. `npm install`
-3. Clonar el archivo `.env.template` y renombrarlo a `.env`
-4. Cambiar las variables de entorno
-5. Crear la base de datos
-6. Levantar el api: `npm run start:dev`
+![alt text](icon-mantencion.svg)
 
-## Compile and run the project
+## Descripción
 
+Este proyecto es un sistema de inventario desarrollado con **NestJS** para el backend, utilizando **PostgreSQL** como base de datos. Su objetivo es gestionar productos, proveedores, categorías y ventas de manera eficiente, resolviendo problemas comunes de administración en negocios pequeños y medianos.
+
+### Tecnologías usadas:
+- **NestJS**: Framework progresivo para aplicaciones Node.js.
+- **PostgreSQL**: Base de datos relacional.
+- **ExcelJS**: Generación de reportes en formato Excel.
+- **Swagger**: Documentación interactiva de APIs.
+- **Multer**: Middleware para la gestión de archivos.
+- **Passport**: Autenticación basada en estrategias.
+- **TypeORM**: ORM para la gestión de la base de datos.
+- **bcrypt**: Encriptación de contraseñas.
+- **RxJS**: Programación reactiva.
+- **npm**: Gestor de paquetes utilizado en lugar de **yarn**.
+
+---
+
+## Requisitos Previos
+
+Antes de comenzar, asegúrate de tener instalados los siguientes requisitos:
+
+- **Node.js**: 22.14.0.
+- **npm**: 11.3.0.
+- **PostgreSQL**: 16.9.
+
+---
+
+## Instalación y Configuración
+
+Sigue estos pasos para clonar e instalar el proyecto:
+
+1. Clonar el repositorio:
+   ```bash
+   git clone https://github.com/tu_usuario/inventario_backend.git
+   ```
+
+2. Instalar las dependencias:
+   ```bash
+   npm install
+   ```
+
+3. Configurar las variables de entorno:
+   - Clona el archivo `.env.template` y renómbralo a `.env`.
+   - Modifica las variables según tu configuración:
+     ```properties
+     DB_NAME=sgifdb
+     DB_PASSWORD=*****
+     DB_HOST=localhost
+     DB_PORT=5432
+     DB_USERNAME=postgres
+     JWT_SECRET=******
+     BASE_URL=http://localhost:4000
+     ```
+
+4. Crear la base de datos:
+     ```
+   - Crear la base de datos en PostgreSQL manualmente:
+     ```sql
+     CREATE DATABASE sgifdb;
+     ```
+
+---
+
+## Ejecución del Proyecto
+
+Para ejecutar el proyecto, utiliza uno de los siguientes comandos:
+
+### Desarrollo:
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev
 ```
 
-## Run tests
 
-```bash
-# unit tests
-$ npm run test
+---
 
-# e2e tests
-$ npm run test:e2e
+## Uso del Sistema
 
-# test coverage
-$ npm run test:cov
-```
+### Endpoints clave:
+A continuación, se listan algunos de los endpoints más importantes del sistema:
 
-## Deployment
+#### Autenticación:
+- **POST /auth/login**: Iniciar sesión.
+- **POST /auth/register**: Registrar un nuevo usuario.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+#### Productos:
+- **GET /products**: Obtener todos los productos.
+- **POST /products**: Crear un nuevo producto.
+- **GET /products/report/excel**: Descargar reporte de productos en Excel.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+#### Proveedores:
+- **GET /providers**: Obtener todos los proveedores.
+- **POST /providers**: Crear un nuevo proveedor.
+- **GET /providers/report/excel**: Descargar reporte de proveedores en Excel.
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+#### Categorías:
+- **GET /categories**: Obtener todas las categorías.
+- **POST /categories**: Crear una nueva categoría.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### Clientes:
+- **GET /customers**: Obtener todos los clientes.
+- **POST /customers**: Crear un nuevo proveedor.
+- **GET /customers/report/excel**: Descargar reporte de clientes en Excel.
 
-## Resources
+#### Ventas:
+- **GET /sales**: Obtener todas las ventas.
+- **POST /sales**: Crear una nueva venta.
 
-Check out a few resources that may come in handy when working with NestJS:
+### Capturas de pantalla de algunos reportes:
+#### Reporte de Productos:
+![alt text](image.png)
+#### Reporte de Proveedores:
+![alt text](image-1.png)
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+### Capturas de pantalla de algunas peticiones en Postman:
+#### Registro de un usuario:
+![alt text](image-2.png)
+#### Inicio de sesión:
+![alt text](image-3.png)
+#### Registro de un producto:
+![alt text](image-4.png)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
 
-## Stay in touch
+### Capturas de pantalla de algunas tablas en la base de datos...:
+#### Tabla de usuarios:
+![alt text](image-5.png)
+#### Tabla de productos:
+![alt text](image-6.png)
+#### Tabla de ventas:
+![alt text](image-7.png)
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Recursos
 
+- **NestJS Documentation**: [https://docs.nestjs.com](https://docs.nestjs.com)
+- **PostgreSQL Documentation**: [https://www.postgresql.org/docs/](https://www.postgresql.org/docs/)
+- **ExcelJS Documentation**: [https://github.com/exceljs/exceljs](https://github.com/exceljs/exceljs)
+- **Swagger Documentation**: [https://swagger.io/docs/](https://swagger.io/docs/)
+- **TypeORM Documentation**: [https://typeorm.io/](https://typeorm.io/)
+
+---
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
